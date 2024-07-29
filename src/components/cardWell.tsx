@@ -6,7 +6,6 @@ import CardButtonArea from "./cardButtonArea";
 export const CardWell = (props: IWells) => {
   const navigate = useNavigate();
   const chooseWell = (wellId?: string) => {
-    console.log("click on card");
     navigate(`/${wellId}`);
   };
 

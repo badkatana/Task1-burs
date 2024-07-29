@@ -28,8 +28,6 @@ const useQueryParamUpdater = () => {
       params.append(key, value);
     }
 
-    console.log(`${location.pathname}?${params.toString()}`);
-
     navigate(`${location.pathname}?${params.toString()}`);
   };
 
