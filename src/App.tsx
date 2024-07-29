@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import RuPage from "./pages/404Page";
 import VariantPage from "./pages/variantPage";
 
 function App() {
@@ -8,10 +7,6 @@ function App() {
     {
       path: "/*",
       Component: VariantPage(),
-    },
-    {
-      path: "sdfsdsds",
-      Component: RuPage(),
     },
   ];
 

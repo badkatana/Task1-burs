@@ -3,34 +3,69 @@ import { MaterialReactTable } from "material-react-table";
 import { IReport } from "../pages/lib/VariantInterface";
 import { getReports } from "../http/functions";
 import { useLocation } from "react-router-dom";
+import { reports } from "../constants/strings";
 
 export const ListReports = () => {
   const [rows, setRows] = useState<IReport[]>([]);
   const location = useLocation();
+
+  const getSortedData = (param: string, data: IReport[]) => {
+    let sortingValues = decodeURIComponent(param)
+      .split("=")[1]
+      .split(",")
+      .map((item) => item.trim());
+    const dat1 = data.filter((item) => sortingValues.includes(item.eventCode));
+    setRows(dat1);
+  };
+
+  const getReportType = (alias: string): string => {
+    const report = reports.find((report) => report.alias === alias);
+    return report ? report.type : alias;
+  };
 
   useEffect(() => {
     let tmp = location.pathname.slice(
       location.pathname.lastIndexOf("/"),
       location.pathname.length
     );
-    console.log(tmp);
-    if (tmp != "/") {
-      getReports(tmp).then((data) => setRows(data));
-    }
+
+    getReports(tmp).then((data) => {
+      data = [...data].sort((a, b) => {
+        return (
+          new Date(b.dateReport).getTime() - new Date(a.dateReport).getTime()
+        );
+      });
+      data = data?.map((item) => ({
+        ...item,
+        reportAlias: getReportType(item.reportAlias),
+      }));
+      if (location.search.substring(1)) {
+        getSortedData(location.search.substring(1), data);
+      } else {
+        setRows(data);
+      }
+    });
   }, [location]);
 
   const columns = useMemo(
     () => [
-      { accessorKey: "entityType", header: "Тип" }, // 1
-      { accessorKey: "dateReport", header: "Дата" }, // 2
-      { accessorKey: "description", header: "Описание" }, //3
-      { accessorKey: "eventCode", header: "Мероприятие" }, //4
+      { accessorKey: "reportAlias", header: "Тип" },
+      { accessorKey: "dateReport", header: "Дата" },
+      { accessorKey: "reportNo", header: "№" },
+      { accessorKey: "description", header: "Описание" },
+      { accessorKey: "eventCode", header: "Мероприятие" },
     ],
     []
   );
 
   return (
-    <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+    <div
+      style={{
+        maxHeight: "400px",
+        width: "95%",
+        overflowY: "auto",
+      }}
+    >
       <MaterialReactTable
         columns={columns}
         data={rows}

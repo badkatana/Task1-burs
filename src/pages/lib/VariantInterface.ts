@@ -11,7 +11,7 @@ export interface ISites {
 }
 
 export interface IWells {
-  wellId?: string;
+  wellId: string;
   siteId?: string;
   spudDate?: string;
   reason?: string;

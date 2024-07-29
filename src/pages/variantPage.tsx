@@ -16,7 +16,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { ListWells } from "../components/listWells";
-import { redirect, useSearchParams } from "react-router-dom";
 import { ListReports } from "../components/listReports";
 
 function VariantPage() {
@@ -84,9 +83,14 @@ function VariantPage() {
     justifyContent: "center",
   }));
 
+  const StyledTypography = styled(Typography)(({ theme }) => ({
+    paddingLeft: "2%",
+    paddingTop: "1%",
+    textAlign: "start",
+  }));
+
   const handleClick = (projectId: string) => {
     setChoosenVar(projectId);
-    // todo: here provide params for ListEvents
   };
 
   if (loading) {
@@ -125,6 +129,9 @@ function VariantPage() {
         </StyledToolBar>
       </AppBar>
 
+      <StyledTypography variant="h6">
+        {menuItems.find((item) => item.projectId === choosenVar!)?.projectName}
+      </StyledTypography>
       <StyledContainerDiv>
         <ListWells projectId={choosenVar}></ListWells>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -132,7 +139,17 @@ function VariantPage() {
         </LocalizationProvider>
       </StyledContainerDiv>
 
-      <ListReports></ListReports>
+      <StyledTypography variant="h6">Отчёты</StyledTypography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ListReports />
+      </Box>
     </div>
   );
 }

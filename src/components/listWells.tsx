@@ -34,9 +34,8 @@ export const ListWells = (props: ListWellsProps) => {
       }}
     >
       {wells?.map((well) => (
-        <div style={{ display: "inline-block" }}>
+        <div style={{ display: "inline-block" }} key={well.wellId}>
           <CardWell
-            key={well.wellId}
             active={well.active}
             wellCommonName={well.wellCommonName}
             siteName={well.siteName}
