@@ -1,5 +1,10 @@
 import { variantHost } from "./index";
-import { ISites, IWells } from "./../pages/lib/VariantInterface";
+import {
+  IEvent,
+  IReport,
+  ISites,
+  IWells,
+} from "./../pages/lib/VariantInterface";
 
 export const getVariants = async () => {
   const { data } = await variantHost.get("Universal/CdProjectSource", {
@@ -35,11 +40,24 @@ export const getWells = async (sitesId: string) => {
 };
 
 export const getEvents = async (wellId: string) => {
-  const { data } = await variantHost.get<IWells[]>(
+  const { data } = await variantHost.get<IEvent[]>(
     `Universal/DmEventT/wellId/${wellId}/`,
     {
       params: {
-        fields: "wellId,eventId,eventCode",
+        fields: "wellId, eventId, eventCode",
+      },
+    }
+  );
+  return data;
+};
+
+export const getReports = async (wellId: string) => {
+  const { data } = await variantHost.get<IReport[]>(
+    `Universal/DmReportJournal/wellId/${wellId}/`,
+    {
+      params: {
+        fields:
+          "eventCode,reportJournalId,wellId,wellboreId,dateReport,eventId,reportAlias,description,entityType,reportNo",
       },
     }
   );

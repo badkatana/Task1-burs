@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { CardWell } from "./cardWell";
 import { useEffect, useState } from "react";
 import { getSites, getWells } from "../http/functions";
@@ -34,12 +34,17 @@ export const ListWells = (props: ListWellsProps) => {
       }}
     >
       {wells.map((well) => (
-        <CardWell
-          wellCommonName={well.wellCommonName}
-          siteName={well.siteName}
-          reason={well.reason}
-          spudDate={well.spudDate}
-        />
+        <div style={{ display: "inline-block" }}>
+          <CardWell
+            key={well.wellId}
+            active={well.active}
+            wellCommonName={well.wellCommonName}
+            siteName={well.siteName}
+            reason={well.reason}
+            wellId={well.wellId}
+            spudDate={well.spudDate}
+          />
+        </div>
       ))}
     </Box>
   );

@@ -16,8 +16,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { ListWells } from "../components/listWells";
-
-// TODO: when info will be from axios, make a normal functions
+import { redirect, useSearchParams } from "react-router-dom";
+import { ListReports } from "../components/listReports";
 
 function VariantPage() {
   const [menuItems, setMenuItems] = useState<IVariant[]>([]);
@@ -86,8 +86,7 @@ function VariantPage() {
 
   const handleClick = (projectId: string) => {
     setChoosenVar(projectId);
-    // todo: here we changing route with params to archieve dynamic routing
-    // also rename this method
+    // todo: here provide params for ListEvents
   };
 
   if (loading) {
@@ -132,6 +131,8 @@ function VariantPage() {
           <DateCalendar sx={{ marginLeft: "auto" }} />
         </LocalizationProvider>
       </StyledContainerDiv>
+
+      <ListReports></ListReports>
     </div>
   );
 }
