@@ -15,8 +15,8 @@ export const ListWells = (props: ListWellsProps) => {
     getSites(props.projectId).then((data) => {
       const fieldsString = data.map((item) => item.siteId).join(", ");
       getWells(fieldsString).then((well) => {
-        well.map((item) => {
-          item.siteName = data.find(
+        well?.map((item) => {
+          item.siteName = data?.find(
             (el) => (el.siteId = item.siteId)
           )?.siteName;
         });
@@ -33,7 +33,7 @@ export const ListWells = (props: ListWellsProps) => {
         flex: 1,
       }}
     >
-      {wells.map((well) => (
+      {wells?.map((well) => (
         <div style={{ display: "inline-block" }}>
           <CardWell
             key={well.wellId}
