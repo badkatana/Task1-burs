@@ -6,7 +6,7 @@ import VariantPage from "./pages/variantPage";
 function App() {
   const routes = [
     {
-      path: "var",
+      path: "",
       Component: VariantPage(),
     },
     {

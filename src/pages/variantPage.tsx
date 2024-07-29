@@ -1,27 +1,35 @@
-import { AppBar, Typography, Button, Toolbar, Grid } from "@mui/material";
+import {
+  AppBar,
+  Typography,
+  Button,
+  Toolbar,
+  CircularProgress,
+} from "@mui/material";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getCatFact, getVariants } from "../http/functions";
-import IVariant from "./lib/VariantInterface";
+import { getVariants } from "../http/functions";
+import { IVariant } from "./lib/VariantInterface";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import SearchIcon from "@mui/icons-material/Search";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { CardWell } from "../components/cardWell";
+import { ListWells } from "../components/listWells";
 
 // TODO: when info will be from axios, make a normal functions
 
 function VariantPage() {
   const [menuItems, setMenuItems] = useState<IVariant[]>([]);
-  const [textPage, setTextPage] = useState({ fact: "No one cares", length: 0 });
+  const [choosenVar, setChoosenVar] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     getVariants().then((data) => {
+      setChoosenVar(data[0].projectId);
       setMenuItems(data);
+      setLoading(false);
     });
-    getCatFact().then((data) => setTextPage(data));
   }, []);
 
   const Search = styled("div")(({ theme }) => ({
@@ -73,15 +81,33 @@ function VariantPage() {
     padding: theme.spacing(0, 2),
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
   }));
 
+  const handleClick = (projectId: string) => {
+    setChoosenVar(projectId);
+    // todo: here we changing route with params to archieve dynamic routing
+    // also rename this method
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <div className="firstcomp">
+    <div className="firstcomp" style={{ margin: 0 }}>
       <AppBar position="static">
         <StyledToolBar>
           <Box>
             {menuItems.map((page) => (
-              <Button key={page.projectId}>
+              <Button
+                key={page.projectId}
+                onClick={(e) => handleClick(page.projectId)}
+              >
                 <Typography textAlign="center" style={{ color: "white" }}>
                   {page.projectName}
                 </Typography>
@@ -99,24 +125,13 @@ function VariantPage() {
           </Search>
         </StyledToolBar>
       </AppBar>
+
       <StyledContainerDiv>
-        <div>{textPage.fact}</div>
+        <ListWells projectId={choosenVar}></ListWells>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar />
+          <DateCalendar sx={{ marginLeft: "auto" }} />
         </LocalizationProvider>
       </StyledContainerDiv>
-
-      <Grid container spacing={4}>
-        <Grid item xs={3}>
-          <CardWell wellsId={1} kustId={2077} projectId={1} />
-        </Grid>
-        <Grid item xs={3}>
-          <CardWell wellsId={1} kustId={2077} projectId={1} />
-        </Grid>
-        <Grid item xs={3}>
-          <CardWell wellsId={1} kustId={2077} projectId={1} />
-        </Grid>
-      </Grid>
     </div>
   );
 }

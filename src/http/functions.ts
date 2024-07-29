@@ -1,10 +1,5 @@
-import { cathost } from "./index";
 import { variantHost } from "./index";
-
-export const getCatFact = async () => {
-  const { data } = await cathost.get("/");
-  return data;
-};
+import { ISites, IWells } from "./../pages/lib/VariantInterface";
 
 export const getVariants = async () => {
   const { data } = await variantHost.get("Universal/CdProjectSource", {
@@ -15,7 +10,38 @@ export const getVariants = async () => {
   return data;
 };
 
-export const getWells = async () => {
-  const { data } = await variantHost.get("Universal/CdWellSource");
+export const getSites = async (projectId: string) => {
+  const { data } = await variantHost.get<ISites[]>(
+    `Universal/CdSiteSource/projectId/${projectId}/`,
+    {
+      params: {
+        fields: "projectId, siteId, siteName",
+      },
+    }
+  );
+  return data;
+};
+
+export const getWells = async (sitesId: string) => {
+  const { data } = await variantHost.get<IWells[]>(
+    `Universal/CdWellSource/siteId/${sitesId}/`,
+    {
+      params: {
+        fields: "siteId,wellCommonName,wellId,spudDate,reason",
+      },
+    }
+  );
+  return data;
+};
+
+export const getEvents = async (wellId: string) => {
+  const { data } = await variantHost.get<IWells[]>(
+    `Universal/DmEventT/wellId/${wellId}/`,
+    {
+      params: {
+        fields: "wellId,eventId,eventCode",
+      },
+    }
+  );
   return data;
 };

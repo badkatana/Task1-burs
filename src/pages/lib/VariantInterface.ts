@@ -1,10 +1,21 @@
-interface IVariant {
-  projectId: number;
+export interface IVariant {
+  projectId: string;
   projectName: string;
+  active?: boolean;
 }
 
-interface IWells {}
+export interface ISites {
+  siteId?: string;
+  projectId: string;
+  siteName: string;
+}
 
-interface ISites {}
-
-export default IVariant;
+export interface IWells {
+  wellId?: string;
+  siteId?: string;
+  spudDate?: string;
+  reason?: string;
+  wellCommonName?: string;
+  siteName?: string;
+  active?: string;
+}

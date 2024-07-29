@@ -3,32 +3,27 @@ import {
   Card,
   CardActions,
   CardContent,
-  Container,
   styled,
   Typography,
 } from "@mui/material";
-
-// TODO change props names
-type WellProps = {
-  wellsId: number;
-  projectId: number;
-  kustId: number;
-};
+import { IWells } from "../pages/lib/VariantInterface";
 
 const StyledButtonEvent = styled(Button)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
 }));
 
-export const CardWell = (props: WellProps) => {
+export const CardWell = (props: IWells) => {
   return (
-    <Card>
-      <CardContent sx={{ maxWidth: 275 }}>
-        <Typography sx={{ fontStyle: 14 }} color="text.secondary">
-          Куст {props.kustId}
+    <Card sx={{ display: "inline-block", margin: 2 }}>
+      <CardContent sx={{ maxWidth: 275, maxHeight: 275 }}>
+        <Typography color="text.secondary">Куст {props.siteName}</Typography>
+        <Typography variant="h5">Скважина {props.wellCommonName}</Typography>
+        <Typography color="text.secondary">
+          Дата забуривания:{" "}
+          {props.spudDate == null ? "No data" : props.spudDate.split("T")[0]}
         </Typography>
-        <Typography variant="h5">Скважина {props.wellsId}</Typography>
-        <Typography sx={{ fontStyle: 14 }} color="text.secondary">
-          Проект: {props.projectId}
+        <Typography color="text.secondary">
+          {props.reason == null ? "No data" : props.reason}
         </Typography>
       </CardContent>
       <CardActions>
