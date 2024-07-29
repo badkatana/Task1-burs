@@ -7,10 +7,7 @@ export const variantHost = axios.create({
 variantHost.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    // Логирование ошибки в консоль
     console.error("Axios error:", error);
-
-    // Возвращаем Promise.reject для обработки ошибки в компоненте, если это необходимо
     return Promise.reject;
   }
 );
