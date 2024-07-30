@@ -10,23 +10,41 @@ export const ListReports = () => {
   const location = useLocation();
 
   const getSortedData = (param: string, data: IReport[]) => {
-    let sortingValues = decodeURIComponent(param)
-      .split("=")[1]
-      .split(",")
-      .map((item) => item.trim());
-    const sortedItems = [...data].sort((a, b) => {
-      const aContains = sortingValues.some((value) =>
-        a.eventCode.includes(value)
-      );
-      const bContains = sortingValues.some((value) =>
-        b.eventCode.includes(value)
-      );
+    const extractSortingValues = (param: string) => {
+      return decodeURIComponent(param)
+        .split("=")[1]
+        .split(",")
+        .map((item) => item.trim());
+    };
 
-      if (aContains && !bContains) return -1;
-      if (!aContains && bContains) return 1;
-      return 0;
-    });
-    setRows(sortedItems);
+    const sortData = (
+      data: IReport[],
+      sortingValues: string[],
+      key: keyof IReport
+    ) => {
+      return [...data].sort((a, b) => {
+        const aContains = sortingValues.some((value) => a[key].includes(value));
+        const bContains = sortingValues.some((value) => b[key].includes(value));
+
+        if (aContains && !bContains) return -1;
+        if (!aContains && bContains) return 1;
+        return 0;
+      });
+    };
+
+    let sortingValues = extractSortingValues(param);
+
+    if (!sortingValues.includes("GEN_PLAN")) {
+      const sortedItems = sortData(data, sortingValues, "eventCode");
+      setRows(sortedItems);
+    } else {
+      sortingValues = sortingValues.map(
+        (value) =>
+          reports.find((report) => report.alias === value)?.type || value
+      );
+      const sortedItems = sortData(data, sortingValues, "reportAlias");
+      setRows(sortedItems);
+    }
   };
 
   const getReportType = (alias: string): string => {
@@ -51,6 +69,7 @@ export const ListReports = () => {
           ...item,
           reportAlias: getReportType(item.reportAlias),
         }));
+
         if (location.search.substring(1)) {
           getSortedData(location.search.substring(1), data);
         } else {

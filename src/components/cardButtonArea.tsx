@@ -3,6 +3,7 @@ import { IEvent } from "../pages/lib/VariantInterface";
 import { getEvents } from "../http/functions";
 import { Button, CardActions, styled } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import { reports } from "../constants/strings";
 
 type CardButtons = {
   wellId: string;
@@ -20,16 +21,21 @@ const useQueryParamUpdater = () => {
     const params = new URLSearchParams(location.search);
 
     if (params.has(key)) {
-      const existingValues = params.getAll(key);
+      let existingValues = params.getAll(key);
+      existingValues = existingValues.filter(
+        (existingValue) =>
+          !reports.some((report) => report.alias === existingValue)
+      );
+
       if (!existingValues.includes(value)) {
         existingValues.push(value);
       }
+
       params.delete(key);
       params.append(key, existingValues.join(","));
     } else {
       params.append(key, value);
     }
-
     navigate(`${location.pathname}?${params.toString()}`);
   };
 
@@ -45,6 +51,10 @@ const CardButtonArea = (props: CardButtons) => {
 
   const handleResetParams = () => {
     navigate(`/${props.wellId}`);
+  };
+
+  const handlePlanSorting = () => {
+    navigate(`/${props.wellId}?field=GEN_PLAN`);
   };
 
   useEffect(() => {
@@ -68,7 +78,9 @@ const CardButtonArea = (props: CardButtons) => {
         ))}
       </CardActions>
       <CardActions>
-        <Button size="small">План</Button>
+        <Button size="small" onClick={() => handlePlanSorting()}>
+          План
+        </Button>
         <Button size="small" onClick={() => handleResetParams()}>
           Все отчёты
         </Button>
