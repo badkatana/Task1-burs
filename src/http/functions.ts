@@ -1,10 +1,6 @@
+import { IReport } from "../interfaces/IReport";
+import { ISites, IWells, IEvent } from "../interfaces/IWell";
 import { variantHost } from "./index";
-import {
-  IEvent,
-  IReport,
-  ISites,
-  IWells,
-} from "./../pages/lib/VariantInterface";
 
 export const getVariants = async () => {
   const { data } = await variantHost.get("Universal/CdProjectSource", {

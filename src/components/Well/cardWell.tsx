@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography } from "@mui/material";
-import { IWells } from "../pages/lib/VariantInterface";
 import { useNavigate } from "react-router-dom";
 import CardButtonArea from "./cardButtonArea";
+import { IWells } from "../../interfaces/IWell";
 
 export const CardWell = (props: IWells) => {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export const CardWell = (props: IWells) => {
             </Typography>
           </CardContent>
         </div>
-        <CardButtonArea wellId={props.wellId} />
+        <CardButtonArea {...props} />
       </Card>
     </div>
   );

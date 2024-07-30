@@ -1,15 +1,12 @@
 import { Box } from "@mui/material";
 import { CardWell } from "./cardWell";
 import { useEffect, useState } from "react";
-import { getSites, getWells } from "../http/functions";
-import { IWells } from "../pages/lib/VariantInterface";
+import { getSites, getWells } from "../../http/functions";
 import { useNavigate } from "react-router-dom";
+import { IWells } from "../../interfaces/IWell";
+import { IVariant } from "../../interfaces/IVariant";
 
-type ListWellsProps = {
-  projectId: string;
-};
-
-export const ListWells = (props: ListWellsProps) => {
+export const ListWells = (props: IVariant) => {
   const [wells, setWells] = useState<IWells[]>([]);
   const navigate = useNavigate();
 
@@ -19,7 +16,7 @@ export const ListWells = (props: ListWellsProps) => {
       getWells(fieldsString).then((well) => {
         if (well) {
           if (
-            window.location.pathname.substring(1) == "" ||
+            window.location.pathname.substring(1) === "" ||
             !well.find((w) =>
               w.wellId.includes(window.location.pathname.substring(1))
             )
@@ -32,6 +29,8 @@ export const ListWells = (props: ListWellsProps) => {
             )?.siteName;
           });
           setWells(well);
+        } else {
+          setWells([]);
         }
       });
     });

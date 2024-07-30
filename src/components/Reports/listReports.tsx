@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { MaterialReactTable } from "material-react-table";
-import { IReport } from "../pages/lib/VariantInterface";
-import { getReports } from "../http/functions";
+import { getReports } from "../../http/functions";
 import { useLocation } from "react-router-dom";
-import { reports } from "../constants/strings";
+import { REPORT_TYPE } from "../../constants/strings";
+import { IReport } from "../../interfaces/IReport";
 
 export const ListReports = () => {
   const [rows, setRows] = useState<IReport[]>([]);
@@ -40,7 +40,7 @@ export const ListReports = () => {
     } else {
       sortingValues = sortingValues.map(
         (value) =>
-          reports.find((report) => report.alias === value)?.type || value
+          REPORT_TYPE.find((report) => report.alias === value)?.type || value
       );
       const sortedItems = sortData(data, sortingValues, "reportAlias");
       setRows(sortedItems);
@@ -48,7 +48,7 @@ export const ListReports = () => {
   };
 
   const getReportType = (alias: string): string => {
-    const report = reports.find((report) => report.alias === alias);
+    const report = REPORT_TYPE.find((report) => report.alias === alias);
     return report ? report.type : alias;
   };
 

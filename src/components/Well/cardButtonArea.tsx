@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
-import { IEvent } from "../pages/lib/VariantInterface";
-import { getEvents } from "../http/functions";
+import { getEvents } from "../../http/functions";
 import { Button, CardActions, styled } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { reports } from "../constants/strings";
-
-type CardButtons = {
-  wellId: string;
-};
-
-const StyledButtonEvent = styled(Button)(({ theme }) => ({
-  borderRadius: theme.shape.borderRadius,
-}));
+import { REPORT_TYPE } from "../../constants/strings";
+import { IEvent, IWells } from "../../interfaces/IWell";
+import { StyledButtonEvent } from "./cardWellStyle";
 
 const useQueryParamUpdater = () => {
   const location = useLocation();
@@ -24,7 +17,7 @@ const useQueryParamUpdater = () => {
       let existingValues = params.getAll(key);
       existingValues = existingValues.filter(
         (existingValue) =>
-          !reports.some((report) => report.alias === existingValue)
+          !REPORT_TYPE.some((report) => report.alias === existingValue)
       );
 
       if (!existingValues.includes(value)) {
@@ -41,7 +34,7 @@ const useQueryParamUpdater = () => {
 
   return { updateQueryParam };
 };
-const CardButtonArea = (props: CardButtons) => {
+const CardButtonArea = (props: IWells) => {
   const [buttonItem, setButtonItem] = useState<IEvent[]>([]);
   const { updateQueryParam } = useQueryParamUpdater();
   const navigate = useNavigate();
@@ -53,13 +46,16 @@ const CardButtonArea = (props: CardButtons) => {
     navigate(`/${props.wellId}`);
   };
 
-  const handlePlanSorting = () => {
-    navigate(`/${props.wellId}?field=GEN_PLAN`);
+  const handlePlanSorting = (planType: string) => {
+    navigate(`/${props.wellId}?field=${planType}`);
   };
 
   useEffect(() => {
     getEvents(props.wellId).then((data) => {
-      setButtonItem(data.filter((item) => item.eventCode !== null));
+      const dataWithoutNullNames = data.filter(
+        (item) => item.eventCode !== null
+      );
+      setButtonItem(dataWithoutNullNames);
     });
   }, [props.wellId]);
 
@@ -78,7 +74,7 @@ const CardButtonArea = (props: CardButtons) => {
         ))}
       </CardActions>
       <CardActions>
-        <Button size="small" onClick={() => handlePlanSorting()}>
+        <Button size="small" onClick={() => handlePlanSorting("GEN_PLAN")}>
           План
         </Button>
         <Button size="small" onClick={() => handleResetParams()}>
@@ -90,6 +86,3 @@ const CardButtonArea = (props: CardButtons) => {
 };
 
 export default CardButtonArea;
-function updateQueryParam(arg0: string, newValue: string) {
-  throw new Error("Function not implemented.");
-}
