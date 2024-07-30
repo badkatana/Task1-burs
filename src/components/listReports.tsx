@@ -14,7 +14,7 @@ export const ListReports = () => {
       .split("=")[1]
       .split(",")
       .map((item) => item.trim());
-    const dat1 = data.filter((item) => sortingValues.includes(item.eventCode));
+    const dat1 = data?.filter((item) => sortingValues.includes(item.eventCode));
     setRows(dat1);
   };
 
@@ -30,19 +30,21 @@ export const ListReports = () => {
     );
 
     getReports(tmp).then((data) => {
-      data = [...data].sort((a, b) => {
-        return (
-          new Date(b.dateReport).getTime() - new Date(a.dateReport).getTime()
-        );
-      });
-      data = data?.map((item) => ({
-        ...item,
-        reportAlias: getReportType(item.reportAlias),
-      }));
-      if (location.search.substring(1)) {
-        getSortedData(location.search.substring(1), data);
-      } else {
-        setRows(data);
+      if (data) {
+        data = data.sort((a, b) => {
+          return (
+            new Date(b.dateReport).getTime() - new Date(a.dateReport).getTime()
+          );
+        });
+        data = data.map((item) => ({
+          ...item,
+          reportAlias: getReportType(item.reportAlias),
+        }));
+        if (location.search.substring(1)) {
+          getSortedData(location.search.substring(1), data);
+        } else {
+          setRows(data);
+        }
       }
     });
   }, [location]);
