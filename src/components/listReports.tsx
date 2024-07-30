@@ -68,6 +68,10 @@ export const ListReports = () => {
         data = data.map((item) => ({
           ...item,
           reportAlias: getReportType(item.reportAlias),
+          dateReport: item.dateReport.substring(
+            0,
+            item.dateReport.indexOf("T")
+          ),
         }));
 
         if (location.search.substring(1)) {
