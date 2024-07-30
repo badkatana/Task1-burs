@@ -3,6 +3,7 @@ import { CardWell } from "./cardWell";
 import { useEffect, useState } from "react";
 import { getSites, getWells } from "../http/functions";
 import { IWells } from "../pages/lib/VariantInterface";
+import { useNavigate } from "react-router-dom";
 
 type ListWellsProps = {
   projectId: string;
@@ -10,17 +11,29 @@ type ListWellsProps = {
 
 export const ListWells = (props: ListWellsProps) => {
   const [wells, setWells] = useState<IWells[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getSites(props.projectId).then((data) => {
       const fieldsString = data.map((item) => item.siteId).join(", ");
       getWells(fieldsString).then((well) => {
-        well?.map((item) => {
-          item.siteName = data?.find(
-            (el) => (el.siteId = item.siteId)
-          )?.siteName;
-        });
-        setWells(well);
+        if (well) {
+          well?.map((item) => {
+            item.siteName = data?.find(
+              (el) => (el.siteId = item.siteId)
+            )?.siteName;
+          });
+          setWells(well);
+
+          if (
+            window.location.pathname.substring(1) == "" ||
+            !well.find((w) =>
+              w.wellId.includes(window.location.pathname.substring(1))
+            )
+          ) {
+            navigate(`/${well[0].wellId}`);
+          }
+        }
       });
     });
   }, [props.projectId]);
