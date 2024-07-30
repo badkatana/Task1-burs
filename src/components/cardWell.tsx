@@ -9,12 +9,23 @@ export const CardWell = (props: IWells) => {
     navigate(`/${wellId}`);
   };
 
+  const checkActiveWell = (): boolean => {
+    if (window.location.pathname.includes(props.wellId)) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <div style={{ display: "inline-block", margin: 10 }}>
-      <Card>
+      <Card raised={checkActiveWell()}>
         <div onClick={() => chooseWell(props.wellId)}>
           <CardContent
-            sx={{ maxWidth: 275, maxHeight: 275, cursor: "pointer" }}
+            sx={{
+              maxWidth: 275,
+              maxHeight: 275,
+              cursor: "pointer",
+            }}
           >
             <Typography color="text.secondary">
               Куст {props.siteName}
