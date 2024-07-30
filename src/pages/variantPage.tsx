@@ -6,8 +6,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import SearchIcon from "@mui/icons-material/Search";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { ListWells } from "../components/Well/listWells";
-import { ListReports } from "../components/Reports/listReports";
+import { ListWells } from "../components/well/listWells";
+import { ListReports } from "../components/reports/listReports";
 import { AppBarMenuItems } from "../components/menu/AppBarMenuItems";
 import {
   StyledToolBar,
