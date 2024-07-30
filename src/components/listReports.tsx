@@ -14,8 +14,19 @@ export const ListReports = () => {
       .split("=")[1]
       .split(",")
       .map((item) => item.trim());
-    const dat1 = data?.filter((item) => sortingValues.includes(item.eventCode));
-    setRows(dat1);
+    const sortedItems = [...data].sort((a, b) => {
+      const aContains = sortingValues.some((value) =>
+        a.eventCode.includes(value)
+      );
+      const bContains = sortingValues.some((value) =>
+        b.eventCode.includes(value)
+      );
+
+      if (aContains && !bContains) return -1;
+      if (!aContains && bContains) return 1;
+      return 0;
+    });
+    setRows(sortedItems);
   };
 
   const getReportType = (alias: string): string => {
