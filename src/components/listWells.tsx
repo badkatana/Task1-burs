@@ -18,13 +18,6 @@ export const ListWells = (props: ListWellsProps) => {
       const fieldsString = data.map((item) => item.siteId).join(", ");
       getWells(fieldsString).then((well) => {
         if (well) {
-          well?.map((item) => {
-            item.siteName = data?.find(
-              (el) => (el.siteId = item.siteId)
-            )?.siteName;
-          });
-          setWells(well);
-
           if (
             window.location.pathname.substring(1) == "" ||
             !well.find((w) =>
@@ -33,6 +26,12 @@ export const ListWells = (props: ListWellsProps) => {
           ) {
             navigate(`/${well[0].wellId}`);
           }
+          well?.map((item) => {
+            item.siteName = data?.find(
+              (el) => (el.siteId = item.siteId)
+            )?.siteName;
+          });
+          setWells(well);
         }
       });
     });
