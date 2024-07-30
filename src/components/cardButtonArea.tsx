@@ -21,7 +21,9 @@ const useQueryParamUpdater = () => {
 
     if (params.has(key)) {
       const existingValues = params.getAll(key);
-      existingValues.push(value);
+      if (!existingValues.includes(value)) {
+        existingValues.push(value);
+      }
       params.delete(key);
       params.append(key, existingValues.join(","));
     } else {
