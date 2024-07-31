@@ -1,7 +1,8 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import { Button, Card, CardContent, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CardButtonArea from "./cardButtonArea";
 import { IWells } from "../../interfaces/IWell";
+import { checkStringIsEmpty } from "../shared/stringFunstions";
 
 export const CardWell = (props: IWells) => {
   const navigate = useNavigate();
@@ -14,6 +15,13 @@ export const CardWell = (props: IWells) => {
       return true;
     }
     return false;
+  };
+
+  const checkDateIsNull = (str?: string) => {
+    if (str == null) {
+      return "No data";
+    }
+    return str.split("T")[0];
   };
 
   return (
@@ -34,13 +42,10 @@ export const CardWell = (props: IWells) => {
               Скважина {props.wellCommonName}
             </Typography>
             <Typography color="text.secondary">
-              Дата забуривания:{" "}
-              {props.spudDate == null
-                ? "No data"
-                : props.spudDate.split("T")[0]}
+              Дата забуривания: {checkDateIsNull(props.spudDate)}
             </Typography>
             <Typography color="text.secondary">
-              {props.reason == null ? "No data" : props.reason}
+              {checkStringIsEmpty(props.reason)}
             </Typography>
           </CardContent>
         </div>

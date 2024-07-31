@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getEvents } from "../../http/functions";
-import { Button, CardActions, styled } from "@mui/material";
+import { Box, Button, CardActions, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { REPORT_TYPE } from "../../constants/strings";
 import { IEvent, IWells } from "../../interfaces/IWell";
 import { StyledButtonEvent } from "./cardWellStyle";
+import { useQuery } from "@tanstack/react-query";
+import { isBlock } from "typescript";
 
 const useQueryParamUpdater = () => {
   const location = useLocation();
@@ -34,6 +36,7 @@ const useQueryParamUpdater = () => {
 
   return { updateQueryParam };
 };
+
 const CardButtonArea = (props: IWells) => {
   const [buttonItem, setButtonItem] = useState<IEvent[]>([]);
   const { updateQueryParam } = useQueryParamUpdater();
@@ -50,14 +53,35 @@ const CardButtonArea = (props: IWells) => {
     navigate(`/${props.wellId}?field=${planType}`);
   };
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["event", props.wellId],
+    queryFn: () => getEvents(props.wellId),
+  });
+
   useEffect(() => {
-    getEvents(props.wellId).then((data) => {
+    if (data && data.length > 0) {
       const dataWithoutNullNames = data.filter(
         (item) => item.eventCode !== null
       );
       setButtonItem(dataWithoutNullNames);
-    });
-  }, [props.wellId]);
+    }
+  }, [data, props.wellId]);
+
+  if (isLoading) {
+    return (
+      <Box>
+        <Typography>Загрузка...</Typography>
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box>
+        <Typography>Произошла ошибка загрузки</Typography>
+      </Box>
+    );
+  }
 
   return (
     <div>

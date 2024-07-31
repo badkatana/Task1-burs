@@ -8,7 +8,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { ListWells } from "../components/well/listWells";
 import { ListReports } from "../components/reports/listReports";
-import { AppBarMenuItems } from "../components/menu/AppBarMenuItems";
+import { AppBarMenuItems } from "../components/menu/appBarMenuItems";
 import {
   StyledToolBar,
   Search,
@@ -18,28 +18,27 @@ import {
   StyledContainerDiv,
 } from "./variantPageStyles";
 import { IVariant } from "../interfaces/IVariant";
+import { useQuery } from "@tanstack/react-query";
 
 function VariantPage() {
-  const [menuItems, setMenuItems] = useState<IVariant[]>([]);
-  const [selectedProject, setSelectedProject] = useState<IVariant>({
-    projectId: "",
-    projectName: "noData",
+  const { isLoading, data, error } = useQuery<IVariant[], Error>({
+    queryKey: ["projects"],
+    queryFn: getVariants,
+    refetchInterval: Infinity,
   });
-  const [loading, setLoading] = useState<boolean>(true);
+  const [selectedProject, setSelectedProject] = useState<IVariant | null>(null);
 
   useEffect(() => {
-    getVariants().then((data) => {
-      setSelectedProject(data[0]);
-      setMenuItems(data);
-      setLoading(false);
-    });
-  }, []);
+    if (data) {
+      setSelectedProject(data![0]);
+    }
+  }, [data]);
 
   const handleClick = (project: IVariant) => {
     setSelectedProject(project);
   };
 
-  if (loading) {
+  if (isLoading || selectedProject === null) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <CircularProgress />
@@ -48,10 +47,10 @@ function VariantPage() {
   }
 
   return (
-    <div className="firstcomp" style={{ margin: 0 }}>
+    <div style={{ margin: 0 }}>
       <AppBar position="static">
         <StyledToolBar>
-          <AppBarMenuItems menuItems={menuItems} handleClick={handleClick} />
+          <AppBarMenuItems menuItems={data!} handleClick={handleClick} />
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -83,7 +82,7 @@ function VariantPage() {
           alignItems: "center",
         }}
       >
-        <ListReports />
+        <ListReports {...selectedProject} />
       </Box>
     </div>
   );

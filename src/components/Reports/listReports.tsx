@@ -4,10 +4,18 @@ import { getReports } from "../../http/functions";
 import { useLocation } from "react-router-dom";
 import { REPORT_TYPE } from "../../constants/strings";
 import { IReport } from "../../interfaces/IReport";
+import { Button, Modal } from "@mui/material";
+import { ReportModal } from "./modals/reportModal";
+import { QueryCache, useQuery } from "@tanstack/react-query";
+import { IVariant } from "../../interfaces/IVariant";
 
-export const ListReports = () => {
+export const ListReports = (props: IVariant) => {
   const [rows, setRows] = useState<IReport[]>([]);
   const location = useLocation();
+  const [isReportModalOpen, setReportModalOpen] = useState(false);
+  const tmp: string = location.pathname.slice(
+    location.pathname.lastIndexOf("/") + 1
+  );
 
   const getSortedData = (param: string, data: IReport[]) => {
     const extractSortingValues = (param: string) => {
@@ -52,36 +60,25 @@ export const ListReports = () => {
     return report ? report.type : alias;
   };
 
-  useEffect(() => {
-    let tmp = location.pathname.slice(
-      location.pathname.lastIndexOf("/"),
-      location.pathname.length
-    );
+  const { isLoading, data, error } = useQuery<IReport[]>({
+    queryKey: ["reports", tmp],
+    queryFn: () => getReports(tmp),
+  });
 
-    getReports(tmp).then((data) => {
-      if (data) {
-        data = data.sort((a, b) => {
-          return (
-            new Date(b.dateReport).getTime() - new Date(a.dateReport).getTime()
-          );
-        });
-        data = data.map((item) => ({
-          ...item,
-          reportAlias: getReportType(item.reportAlias),
-          dateReport: item.dateReport.substring(
-            0,
-            item.dateReport.indexOf("T")
-          ),
-        }));
-
-        if (location.search.substring(1)) {
-          getSortedData(location.search.substring(1), data);
-        } else {
-          setRows(data);
-        }
-      }
+  const processedData = useMemo(() => {
+    if (!data) return [];
+    const sortedData = data.sort((a, b) => {
+      return (
+        new Date(b.dateReport).getTime() - new Date(a.dateReport).getTime()
+      );
     });
-  }, [location]);
+
+    return sortedData.map((item) => ({
+      ...item,
+      reportAlias: getReportType(item.reportAlias),
+      dateReport: item.dateReport.substring(0, item.dateReport.indexOf("T")),
+    }));
+  }, [data]);
 
   const columns = useMemo(
     () => [
@@ -94,6 +91,26 @@ export const ListReports = () => {
     []
   );
 
+  useEffect(() => {
+    if (location.search.substring(1)) {
+      getSortedData(location.search.substring(1), processedData);
+    } else {
+      setRows(processedData);
+    }
+  }, [location.search, processedData]);
+
+  if (isLoading) {
+    return <div>Загрузка...</div>;
+  }
+
+  if (error) {
+    return <div>Произошла ошибка: {error.message}</div>;
+  }
+
+  const func = (val: boolean) => {
+    setReportModalOpen(val);
+  };
+
   return (
     <div
       style={{
@@ -102,6 +119,10 @@ export const ListReports = () => {
         overflowY: "auto",
       }}
     >
+      <Button onClick={() => setReportModalOpen(!isReportModalOpen)}>
+        Create Report
+      </Button>
+      <ReportModal open={isReportModalOpen} project={props}></ReportModal>
       <MaterialReactTable
         columns={columns}
         data={rows}
