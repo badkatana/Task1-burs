@@ -49,7 +49,7 @@ export const ReportModal = (props: reportModalProps) => {
         <form onSubmit={handleSubmit(submit)}>
           <Controller
             render={({ field: { onChange, value } }) => (
-              <Select onChange={onChange} value={value}>
+              <Select onChange={onChange} value={value ?? REPORT_TYPE[0].type}>
                 {REPORT_TYPE.map((report) => (
                   <MenuItem key={report.type} value={report.type}>
                     {report.type}
@@ -62,7 +62,10 @@ export const ReportModal = (props: reportModalProps) => {
           />
           <Controller
             render={({ field: { onChange, value } }) => (
-              <Select onChange={onChange} value={value}>
+              <Select
+                onChange={onChange}
+                value={value ?? wells![0].wellCommonName}
+              >
                 {wells!.map((well) => (
                   <MenuItem key={well.wellId} value={well.wellCommonName}>
                     {well.wellCommonName}
@@ -75,7 +78,7 @@ export const ReportModal = (props: reportModalProps) => {
           />
           <Controller
             render={({ field: { onChange, value } }) => (
-              <Select onChange={onChange} value={value}>
+              <Select onChange={onChange} value={value ?? sites[0]!.siteName}>
                 {sites!.map((site) => (
                   <MenuItem key={site.siteId} value={site.siteName}>
                     {site.siteName}
@@ -86,7 +89,7 @@ export const ReportModal = (props: reportModalProps) => {
             control={control}
             name={"siteName"}
           />
-          <button>jdfgjdf</button>
+          <Button onClick={() => submit}>Сохранить изменения</Button>
         </form>
       </Box>
     </Modal>
