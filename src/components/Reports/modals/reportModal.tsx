@@ -1,49 +1,93 @@
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Button, MenuItem, Modal, Select } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { IVariant } from "../../../interfaces/IVariant";
-import { useEffect } from "react";
-import { ISites } from "../../../interfaces/IWell";
+import { ISites, IWells } from "../../../interfaces/IWell";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { IReportModalForm } from "../../../interfaces/IReportModalForm";
+import { StyledModalBox } from "./reportModalStyle";
+import { REPORT_TYPE } from "../../../constants/strings";
 
 type reportModalProps = {
   open: boolean;
   project: IVariant;
-  closeModal?: (value: boolean) => {};
-};
-
-/// я всё это перенесу, пока здесь всё в процессе подготовки
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+  closeModal: (value: boolean) => {};
 };
 
 export const ReportModal = (props: reportModalProps) => {
-  const { data: projects } = useQuery<ISites[], Error>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IReportModalForm>();
+
+  const { data: sites = [], isLoading } = useQuery<ISites[], Error>({
     queryKey: ["sites", props.project.projectId],
   });
 
-  useEffect(() => {
-    console.log(typeof projects);
-    console.log(projects![0]);
-  }, [projects]);
+  const { data: wells, isLoading: wellLoad } = useQuery<IWells[], Error>({
+    queryKey: ["wells", sites],
+  });
+
+  if (isLoading || wellLoad) {
+    return <div>Загрузка</div>;
+  }
+
+  const submit: SubmitHandler<IReportModalForm> = (data) => {
+    console.log(data);
+  };
 
   return (
     <Modal
       open={props.open}
-      sx={style}
+      sx={StyledModalBox}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
       <Box>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          {projects![0].projectId}
-        </Typography>
+        <Button onClick={() => props.closeModal(false)}>Close modal</Button>
+        <form onSubmit={handleSubmit(submit)}>
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <Select onChange={onChange} value={value}>
+                {REPORT_TYPE.map((report) => (
+                  <MenuItem key={report.type} value={report.type}>
+                    {report.type}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+            control={control}
+            name={"reportType"}
+          />
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <Select onChange={onChange} value={value}>
+                {wells!.map((well) => (
+                  <MenuItem key={well.wellId} value={well.wellCommonName}>
+                    {well.wellCommonName}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+            control={control}
+            name={"well"}
+          />
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <Select onChange={onChange} value={value}>
+                {sites!.map((site) => (
+                  <MenuItem key={site.siteId} value={site.siteName}>
+                    {site.siteName}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+            control={control}
+            name={"siteName"}
+          />
+          <button>jdfgjdf</button>
+        </form>
       </Box>
     </Modal>
   );

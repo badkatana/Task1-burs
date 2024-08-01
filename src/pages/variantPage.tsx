@@ -21,7 +21,7 @@ import { IVariant } from "../interfaces/IVariant";
 import { useQuery } from "@tanstack/react-query";
 
 function VariantPage() {
-  const { isLoading, data, error } = useQuery<IVariant[], Error>({
+  const { isLoading, data } = useQuery<IVariant[], Error>({
     queryKey: ["projects"],
     queryFn: getVariants,
     refetchInterval: Infinity,

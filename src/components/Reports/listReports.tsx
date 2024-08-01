@@ -14,7 +14,7 @@ export const ListReports = (props: IVariant) => {
   const location = useLocation();
   const [isReportModalOpen, setReportModalOpen] = useState(false);
   const tmp: string = location.pathname.slice(
-    location.pathname.lastIndexOf("/") + 1
+    location.pathname.lastIndexOf("/")
   );
 
   const getSortedData = (param: string, data: IReport[]) => {
@@ -107,10 +107,6 @@ export const ListReports = (props: IVariant) => {
     return <div>Произошла ошибка: {error.message}</div>;
   }
 
-  const func = (val: boolean) => {
-    setReportModalOpen(val);
-  };
-
   return (
     <div
       style={{
@@ -122,7 +118,11 @@ export const ListReports = (props: IVariant) => {
       <Button onClick={() => setReportModalOpen(!isReportModalOpen)}>
         Create Report
       </Button>
-      <ReportModal open={isReportModalOpen} project={props}></ReportModal>
+      <ReportModal
+        open={isReportModalOpen}
+        project={props}
+        closeModal={() => setReportModalOpen}
+      ></ReportModal>
       <MaterialReactTable
         columns={columns}
         data={rows}

@@ -56,6 +56,7 @@ const CardButtonArea = (props: IWells) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["event", props.wellId],
     queryFn: () => getEvents(props.wellId),
+    refetchInterval: Infinity,
   });
 
   useEffect(() => {
