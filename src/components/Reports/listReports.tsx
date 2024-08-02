@@ -4,9 +4,9 @@ import { getReports } from "../../http/functions";
 import { useLocation } from "react-router-dom";
 import { REPORT_TYPE } from "../../constants/strings";
 import { IReport } from "../../interfaces/IReport";
-import { Button, Modal } from "@mui/material";
+import { Button } from "@mui/material";
 import { ReportModal } from "./modals/reportModal";
-import { QueryCache, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { IVariant } from "../../interfaces/IVariant";
 
 export const ListReports = (props: IVariant) => {
@@ -112,6 +112,7 @@ export const ListReports = (props: IVariant) => {
       newRow.dateReport.indexOf("T")
     );
     setLocalRows((prev) => [newRow, ...prev]);
+    setReportModalOpen(false);
   };
 
   if (isLoading) {
