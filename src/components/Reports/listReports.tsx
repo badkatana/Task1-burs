@@ -107,6 +107,10 @@ export const ListReports = (props: IVariant) => {
     return <div>Произошла ошибка: {error.message}</div>;
   }
 
+  const saveNewReport = (value: IReport) => {
+    console.log(value);
+  };
+
   return (
     <div
       style={{
@@ -121,7 +125,8 @@ export const ListReports = (props: IVariant) => {
       <ReportModal
         open={isReportModalOpen}
         project={props}
-        closeModal={() => setReportModalOpen}
+        closeModal={setReportModalOpen}
+        saveToReports={saveNewReport}
       ></ReportModal>
       <MaterialReactTable
         columns={columns}

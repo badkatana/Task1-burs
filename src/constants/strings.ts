@@ -4,3 +4,5 @@ export const REPORT_TYPE = [
   { type: "Цементирование", alias: "GEN_CMT" },
   { type: "Планирование", alias: "GEN_PLAN" },
 ];
+
+export const EVENT_TYPE = [{ eventCode: "БУР" }, { eventCode: "ОСВ" }];

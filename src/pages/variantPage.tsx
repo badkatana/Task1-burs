@@ -19,6 +19,7 @@ import {
 } from "./variantPageStyles";
 import { IVariant } from "../interfaces/IVariant";
 import { useQuery } from "@tanstack/react-query";
+import "dayjs/locale/ru";
 
 function VariantPage() {
   const { isLoading, data } = useQuery<IVariant[], Error>({
@@ -68,7 +69,7 @@ function VariantPage() {
       </StyledTypography>
       <StyledContainerDiv>
         <ListWells {...selectedProject}></ListWells>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ru">
           <DateCalendar sx={{ marginLeft: "auto" }} />
         </LocalizationProvider>
       </StyledContainerDiv>

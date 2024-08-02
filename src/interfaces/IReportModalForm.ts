@@ -1,5 +1,4 @@
-import { ISites } from "./IWell";
-import { REPORT_TYPE } from "../constants/strings";
+import { Dayjs } from "dayjs";
 
 export interface IReportModalForm {
   siteName: string;
@@ -7,6 +6,6 @@ export interface IReportModalForm {
   reportNumber: number;
   description: string;
   well: string;
+  eventCode: string;
+  dateReport: Dayjs;
 }
-
-export type ReportTypeEnum = {};
