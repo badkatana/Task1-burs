@@ -65,6 +65,8 @@ export const ListReports = (props: IVariant) => {
     queryFn: () => getReports(tmp),
   });
 
+  const [localRows, setLocalRows] = useState<IReport[]>([]);
+
   const processedData = useMemo(() => {
     if (!data) return [];
     const sortedData = data.sort((a, b) => {
@@ -80,6 +82,10 @@ export const ListReports = (props: IVariant) => {
     }));
   }, [data]);
 
+  const combinedData = useMemo(() => {
+    return [...processedData, ...localRows];
+  }, [processedData, localRows]);
+
   const columns = useMemo(
     () => [
       { accessorKey: "reportAlias", header: "Тип" },
@@ -93,11 +99,15 @@ export const ListReports = (props: IVariant) => {
 
   useEffect(() => {
     if (location.search.substring(1)) {
-      getSortedData(location.search.substring(1), processedData);
+      getSortedData(location.search.substring(1), combinedData);
     } else {
-      setRows(processedData);
+      setRows(combinedData);
     }
-  }, [location.search, processedData]);
+  }, [location.search, combinedData]);
+
+  const addLocalRow = (newRow: IReport) => {
+    setLocalRows((prev) => [...prev, newRow]);
+  };
 
   if (isLoading) {
     return <div>Загрузка...</div>;
@@ -106,10 +116,6 @@ export const ListReports = (props: IVariant) => {
   if (error) {
     return <div>Произошла ошибка: {error.message}</div>;
   }
-
-  const saveNewReport = (value: IReport) => {
-    console.log(value);
-  };
 
   return (
     <div
@@ -126,7 +132,7 @@ export const ListReports = (props: IVariant) => {
         open={isReportModalOpen}
         project={props}
         closeModal={setReportModalOpen}
-        saveToReports={saveNewReport}
+        saveToReports={addLocalRow}
       ></ReportModal>
       <MaterialReactTable
         columns={columns}
