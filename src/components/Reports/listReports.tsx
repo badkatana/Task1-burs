@@ -83,7 +83,7 @@ export const ListReports = (props: IVariant) => {
   }, [data]);
 
   const combinedData = useMemo(() => {
-    return [...processedData, ...localRows];
+    return [...localRows, ...processedData];
   }, [processedData, localRows]);
 
   const columns = useMemo(
@@ -106,7 +106,12 @@ export const ListReports = (props: IVariant) => {
   }, [location.search, combinedData]);
 
   const addLocalRow = (newRow: IReport) => {
-    setLocalRows((prev) => [...prev, newRow]);
+    newRow.reportAlias = getReportType(newRow.reportAlias);
+    newRow.dateReport = newRow.dateReport.substring(
+      0,
+      newRow.dateReport.indexOf("T")
+    );
+    setLocalRows((prev) => [newRow, ...prev]);
   };
 
   if (isLoading) {
